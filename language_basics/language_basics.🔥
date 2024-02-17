@@ -1,0 +1,92 @@
+from structs_and_traits import *
+from python import Python
+
+def main():
+    """
+    Multiline comments
+    are done
+    like this.
+    """
+    # Single line comments are like this
+    def_example()
+    fn_example()
+    
+    var x = 5
+    def_use_variables(x)
+    print_no_newline("x outside use_variables(): ")
+    print(x)
+    fn_use_variables(x)
+
+    let mine = MyStruct(9, 7)
+    mine.total()
+
+    traits_function(mine)
+
+    let pf_total = parametric_function[3](2, 5)
+    print(pf_total)
+
+    multiline_string()
+
+    using_python_libraries()
+
+def def_example():
+    print("this used a def function")
+
+fn fn_example():
+    print("this used an fn function")
+
+def def_use_variables(x):
+    var mutable = x
+    let immutable = x
+    
+    mutable *= 2
+    x += 1
+    
+    print_no_newline("mutable: ")
+    print(mutable)
+    print_no_newline("immutable: ")
+    print(immutable)
+    print_no_newline("x inside use_variables(): ")
+    print(x)
+
+fn fn_use_variables(x: Int):
+    var mutable = x
+    let immutable = x
+    
+    mutable *= 2
+    # this is not possible with fn
+    #x += 1
+    
+    print_no_newline("mutable: ")
+    print(mutable)
+    print_no_newline("immutable: ")
+    print(immutable)
+    print_no_newline("x inside use_variables(): ")
+    print(x)
+
+fn traits_function[T: MyTrait](x: T):
+    x.total()
+
+fn parametric_function[count: Int](initial: Int, increment: Int) -> Int:
+    var total = initial
+    for i in range(count):
+        total += increment
+    return total
+
+def multiline_string():
+    long_string = "This is a single line of text "
+                      "that is written on multiple "
+                      "lines to make it more readable "
+                      "for the developer."
+    print(long_string)
+
+fn yay_multiline_statements():
+    let text = String(",")
+        .join("Hello", " world!")
+    print(text)
+
+fn using_python_libraries() raises:
+    let np = Python.import_module("numpy")
+    let ar = np.arange(15).reshape(3, 5)
+    print(ar)
+    print(ar.shape)
