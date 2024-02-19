@@ -1,0 +1,109 @@
+def main():
+    basics()
+    passing_to_def()
+    what_about_object_arguments()
+    what_about_heap_values()
+    fns_use_immutable_references()
+    borrowed_causes_value_ownership_like_fn()
+    inout_causes_value_to_be_a_mutable_reference()
+    owned_can_be_used_in_two_ways()
+
+def basics():
+    # sharing a value-semantic creates a copy of the value so incrementing the one doesn't increment the other
+    original = 1
+    this_is_copied = original
+    this_is_copied += 1
+    print(original)
+    print(this_is_copied)
+
+def passing_to_def():
+    # the same applies when passing a value to a def (value is copied)
+    original = 1
+    passing_to_def_child(original)
+    print(original)
+
+def passing_to_def_child(this_is_copied: Int):
+    this_is_copied += 1
+    print(this_is_copied)
+
+def what_about_object_arguments():
+    # even when the def is defined without a type constraint on the argument, it still creates a copy
+    original = 1
+    what_about_object_arguments_child(original)
+    print(original)
+
+def what_about_object_arguments_child(value_from_parent):
+    value_from_parent += 1
+    print(value_from_parent)
+
+def what_about_heap_values():
+    # even though tensors are allocated on the heap, they are still copied when passed to a def
+    t = Tensor[DType.float16](2)
+    t[0] = 1
+    t[1] = 2
+    what_about_heap_values_child(t)
+    print(t)
+
+def what_about_heap_values_child(t: Tensor[DType.float16]):
+    t[1] = 3
+    print(t)
+
+fn fns_use_immutable_references():
+    # fn receives arguments as immutable refences by default
+    var x = 1
+    fns_use_immutable_references_child(x)
+    print(x)
+
+fn fns_use_immutable_references_child(y: Int):
+    # not possible anymore
+    #y += 1 
+    # to modify the value, an explicit copy is required
+    var z = y
+    z += 1
+    print(z)
+
+def borrowed_causes_value_ownership_like_fn():
+    a = 1
+    borrowed_causes_value_ownership_like_fn_child(a)
+    print(a)
+
+def borrowed_causes_value_ownership_like_fn_child(borrowed b):
+    # this is not possible now because b is an immutable reference to a
+    # b += 2
+    c = b
+    c += 1
+    print(c)
+
+fn inout_causes_value_to_be_a_mutable_reference():
+    var a = 1
+    inout_causes_value_to_be_a_mutable_reference_child(a)
+    print(a)
+    # reassigning with fn and inout modifies the original value
+    var t = Tensor[DType.float16](2)
+    t[0] = 3
+    t[1] = 6
+    reassign_inout_value(t)
+    print(t)
+
+fn inout_causes_value_to_be_a_mutable_reference_child(inout b: Int):
+    # this is now possible
+    b += 1
+    print(b)
+
+fn reassign_inout_value(inout t: Tensor[DType.float16]):
+    # this modifies the original value
+    t = Tensor[DType.float16](2)
+    print(t)
+
+fn owned_can_be_used_in_two_ways():
+    var a: String = "hello"
+    var b: String = "left"
+    owned_can_be_used_in_two_ways(a, b^)
+    print(a)
+    #print(b) # not possible, ownership of b was trasferred to the child function
+
+fn owned_can_be_used_in_two_ways(owned c: String, owned d: String):
+    c = "bye"
+    d = "right"
+    print(c)
+    print(d)
